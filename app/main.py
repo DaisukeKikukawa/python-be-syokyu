@@ -85,3 +85,4 @@ def get_echo(message: str,name: str):
 @app.get("/health", tags=["System"])
 def get_health():
     return {"status": "ok"}
+
