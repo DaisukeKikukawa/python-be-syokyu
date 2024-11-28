@@ -130,3 +130,8 @@ def delete_todo_list(todo_list_id: int, session: Session = Depends(get_db)):
     session.delete(delete_todo_list)
     session.commit()
     return {}
+
+@app.get("/lists/{todo_list_id}/items/{todo_item_id}", tags=["Todoアイテム"])
+def get_todo_item(todo_list_id: int, todo_item_id: int, session: Session = Depends(get_db)):
+    db_item = session.query(ItemModel).filter(ItemModel.id == todo_item_id).filter(ItemModel.todo_list_id == todo_list_id).first()
+    return db_item
