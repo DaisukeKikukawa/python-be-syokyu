@@ -122,3 +122,11 @@ def put_todo_list(todo_list_id: int, todo_list: UpdateTodoList, session: Session
     session.commit()
     update_todo_list = session.query(ListModel).filter(ListModel.id == update_todo_list.id).first()
     return update_todo_list
+
+# TODO リスト削除の API を実装
+@app.delete("/lists/{todo_list_id}", tags=["Todoリスト"])
+def delete_todo_list(todo_list_id: int, session: Session = Depends(get_db)):
+    delete_todo_list = session.query(ListModel).filter(ListModel.id == todo_list_id).first()
+    session.delete(delete_todo_list)
+    session.commit()
+    return {}
