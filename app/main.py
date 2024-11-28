@@ -12,6 +12,7 @@ from .models.list_model import ListModel
 from fastapi import Depends
 from .dependencies import get_db
 from sqlalchemy.orm import Session
+from datetime import datetime
 
 DEBUG = os.environ.get("DEBUG", "") == "true"
 
@@ -94,3 +95,17 @@ def get_health():
 async def get_todo_list(todo_list_id: int, session: Session = Depends(get_db)):
     db_item = session.query(ListModel).filter(ListModel.id == todo_list_id).first()
     return db_item
+
+@app.post("/lists", tags=["Todoリスト"])
+def post_todo_list(todo_list: NewTodoList, session: Session = Depends(get_db)):
+    current_time = datetime.now()
+    new_todo_list = ListModel(
+        title=todo_list.title,
+        description=todo_list.description,
+        created_at=current_time,
+        updated_at=current_time
+    )
+    session.add(new_todo_list)
+    session.commit()
+    created_todo_list = session.query(ListModel).filter(ListModel.id == new_todo_list.id).first()
+    return created_todo_list
